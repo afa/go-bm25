@@ -1,22 +1,29 @@
 package main
-	import (
-		// "fmt"
-		"net/http"
-		"github.com/labstack/echo/v5"
-  		"github.com/labstack/echo/v5/middleware"
-	)
 
-	func main() {
-  e := echo.New()
+import (
+	// "fmt"
+	"app/documents"
+	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
+	"net/http"
+)
 
-  e.Use(middleware.RequestLogger())
-  e.Use(middleware.Recover())
+func main() {
+	e := echo.New()
 
-  e.GET("/", func(c *echo.Context) error {
-    return c.JSON(http.StatusOK, map[string]string{"message": "Hello, World!"})
-  })
+	e.Use(middleware.RequestLogger())
+	e.Use(middleware.Recover())
 
-  if err := e.Start(":1323"); err != nil {
-    e.Logger.Error("failed to start server", "error", err)
-  }
+	docs := e.Group("documents")
+	documents.Routes(docs)
+	
+	e.GET("/", rootHandler)
+
+	if err := e.Start(":1323"); err != nil {
+		e.Logger.Error("failed to start server", "error", err)
+	}
+}
+
+func rootHandler(c *echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]string{"message": "bm"})
 }
