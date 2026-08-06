@@ -1,31 +1,34 @@
 package documents
+
 import (
 	"net/http"
+
 	"github.com/labstack/echo/v5"
 )
 
 func Routes(g *echo.Group) {
-	g.GET("/", GetDocuments)
-	g.GET("/:id", GetDocument)
-	g.POST("/", CreateDocument)
-	g.PUT("/:id", UpdateDocument)
-	g.DELETE("/:id", DeleteDocument)
-	return
+	g.GET("/:id", getDocument)
+	g.GET("/", getDocuments)
+	g.GET("", getDocuments)
+	g.POST("/", createDocument)
+	g.POST("", createDocument)
+	g.PUT("/:id", updateDocument)
+	g.DELETE("/:id", deleteDocument)
 }
 
-func GetDocuments(c *echo.Context) error {
+func getDocuments(c *echo.Context) error {
 	return c.JSON(http.StatusOK, []string{"document1", "document2"})
 }
 
-func GetDocument(c *echo.Context) error {
+func getDocument(c *echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"document": "document1"})
 }
-func CreateDocument(c *echo.Context) error {
+func createDocument(c *echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": "document created"})
 }
-func UpdateDocument(c *echo.Context) error {
+func updateDocument(c *echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": "document updated"})
 }
-func DeleteDocument(c *echo.Context) error {
+func deleteDocument(c *echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": "document deleted"})
 }

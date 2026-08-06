@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "fmt"
 	"app/documents"
 	"net/http"
 
@@ -34,7 +33,7 @@ func setup_routes() *echo.Echo {
 	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
 
-	docs := e.Group("documents")
+	docs := e.Group("/documents")
 	documents.Routes(docs)
 
 	e.GET("/", rootHandler)
