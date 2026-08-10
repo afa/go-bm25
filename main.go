@@ -3,6 +3,7 @@ package main
 import (
 	"app/corpora"
 	"app/documents"
+	"app/ranks"
 	"net/http"
 
 	"github.com/labstack/echo/v5"
@@ -16,7 +17,15 @@ import (
 
 type Document struct {
 	gorm.Model
-	Text string
+	Text  string
+	State string
+}
+
+type Corpus struct {
+	gorm.Model
+	Name        string
+	ExternalKey string
+	State       string
 }
 
 func main() {
@@ -26,6 +35,17 @@ func main() {
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
+}
+
+func setup_db() *gorm.DB {
+	db, err := gorm.Open(postgres.Open("host=localhost dbname=fw_dev sslmode=disable"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	// Migrate the schema
+	db.AutoMigrate(&Document{})
+	return db
 }
 
 func setup_routes() *echo.Echo {
@@ -40,19 +60,11 @@ func setup_routes() *echo.Echo {
 	corp := e.Group("/corpora")
 	corpora.Routes(corp)
 
+	rank := e.Group("/ranks")
+	ranks.Routes(rank)
+
 	e.GET("/", rootHandler)
 	return e
-}
-
-func setup_db() *gorm.DB {
-	db, err := gorm.Open(postgres.Open("host=localhost dbname=fw_dev sslmode=disable"), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
-
-	// Migrate the schema
-	db.AutoMigrate(&Document{})
-	return db
 }
 
 func rootHandler(c *echo.Context) error {
