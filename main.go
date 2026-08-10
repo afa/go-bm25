@@ -1,6 +1,7 @@
 package main
 
 import (
+	"app/corpora"
 	"app/documents"
 	"net/http"
 
@@ -35,6 +36,9 @@ func setup_routes() *echo.Echo {
 
 	docs := e.Group("/documents")
 	documents.Routes(docs)
+
+	corp := e.Group("/corpora")
+	corpora.Routes(corp)
 
 	e.GET("/", rootHandler)
 	return e
