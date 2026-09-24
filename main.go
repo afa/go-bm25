@@ -6,11 +6,10 @@ import (
 	"app/ranks"
 	"net/http"
 
-	"github.com/labstack/echo/v5"
-	"github.com/labstack/echo/v5/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	// orm
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -28,9 +27,22 @@ type Corpus struct {
 	State       string
 }
 
+var db *gorm.DB
+
+const DBKey = "db"
+
+func ContextDB(db *gorm.DB) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set("db", db)
+			return next(c)
+		}
+	}
+}
+
 func main() {
-	setup_db()
-	e := setup_routes()
+	db = setup_db()
+	e := setup_routes(db)
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
@@ -48,11 +60,12 @@ func setup_db() *gorm.DB {
 	return db
 }
 
-func setup_routes() *echo.Echo {
+func setup_routes(db *gorm.DB) *echo.Echo {
 	e := echo.New()
 
 	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
+	e.Use(ContextDB(db))
 
 	docs := e.Group("/documents")
 	documents.Routes(docs)
@@ -67,6 +80,6 @@ func setup_routes() *echo.Echo {
 	return e
 }
 
-func rootHandler(c *echo.Context) error {
+func rootHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": "bm"})
 }

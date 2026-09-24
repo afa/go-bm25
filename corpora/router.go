@@ -3,31 +3,31 @@ package corpora
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v4"
 )
 
 func Routes(g *echo.Group) {
-	g.GET("/", getCorpora)
-	g.GET("", getCorpora)
-	g.GET("/:id", getCorpus)
-	g.POST("/", createCorpus)
-	g.POST("", createCorpus)
-	g.PUT("/:id", updateCorpus)
-	g.DELETE("/:id", deleteCorpus)
+	g.GET("/", getCorporaHandler)
+	g.GET("", getCorporaHandler)
+	g.GET("/:id", getCorpusHandler)
+	g.POST("/", createCorpusHandler)
+	g.POST("", createCorpusHandler)
+	g.PUT("/:id", updateCorpusHandler)
+	g.DELETE("/:id", deleteCorpusHandler)
 }
 
-func getCorpora(c *echo.Context) error {
+func getCorporaHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, []string{"corpus1", "corpus2"})
 }
-func getCorpus(c *echo.Context) error {
+func getCorpusHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"name": "corpus1"})
 }
-func createCorpus(c *echo.Context) error {
+func createCorpusHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{"ok": true})
 }
-func updateCorpus(c *echo.Context) error {
+func updateCorpusHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{"ok": true})
 }
-func deleteCorpus(c *echo.Context) error {
+func deleteCorpusHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{"ok": true})
 }
