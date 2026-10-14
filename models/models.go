@@ -17,7 +17,8 @@ type Corpus struct {
 
 type Document struct {
 	gorm.Model
-	Corpus string `gorm:"index:document_corpus_state_idx;type:string"`
-	Text   string
-	State  string `gorm:"index:document_corpus_state_idx;type:string"`
+	ExternalKey string `gorm:"unique;uniqueIndex:document_external_key_uniq_idx;type:string"`
+	Corpus      string `gorm:"index:document_corpus_state_idx;type:string"`
+	Text        string
+	State       string `gorm:"index:document_corpus_state_idx;type:string"`
 }
